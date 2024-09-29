@@ -9,11 +9,11 @@
 
 
 module data_mem(
-    input clk,
-    input w_en,
-    input [31:0] addr,
-    input [31:0] w_data,
-    output [31:0] r_data
+    input wire clk,
+    input wire w_en,
+    input wire [31:0] addr,
+    input wire [31:0] w_data,
+    output wire [31:0] r_data
     );
     
     reg [31:0] data_mem [31:0];
