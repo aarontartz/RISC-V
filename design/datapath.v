@@ -120,8 +120,8 @@ module datapath(
     );
     
     mux mux_pc (                // outputs to pc
-        .in1(pc_plus_4),        // goes to next instruction
-        .in2(pc_target),        // branches to different instruction
+        .in_a(pc_plus_4),        // goes to next instruction
+        .in_b(pc_target),        // branches to different instruction
         .sel(pc_src),
         .out(pc_next)
     );
