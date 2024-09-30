@@ -19,11 +19,11 @@ module data_mem(
     reg [31:0] data_mem [31:0];
     
     // data memory read combinationally
-    assign r_data = data_mem[addr];
+    assign r_data = data_mem[addr[31:2]];  // we also have to do [31:2] here to match instr_mem module
     
     always @(posedge clk) begin
         if (w_en)
-            data_mem[addr] <= w_data;
+            data_mem[addr[31:2]] <= w_data;
     end
     
 endmodule
