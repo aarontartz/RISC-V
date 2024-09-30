@@ -1,21 +1,10 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Engineer: Aaron Tartz
 // 
-// Create Date: 09/29/2024 08:32:45 PM
-// Design Name: 
+// Create Date: 09/29/2024 03:02:22 AM
 // Module Name: top_tb
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
+// Description: Executes machine code stored in external instr.txt file
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -23,14 +12,10 @@
 module top_tb;
     reg clk;
     reg rst;
-    //reg [31:0] instr;
-    wire [31:0] pc_out;
     
     top top_inst(
         .clk(clk),
-        .rst(rst),
-        //.instr(instr),
-        .pc_out(pc_out)
+        .rst(rst)
     );
     
     always #20 clk = ~clk;
