@@ -1,5 +1,5 @@
 # Testbench Waveforms
-## top.v
+## top_tb.v
 addi x1, 0, 3 (0x00300093)  
 addi x2, 0, 6 (0x00600113)  
 add x4, x1, x2 (0x002081B3)  
