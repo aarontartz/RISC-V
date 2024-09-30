@@ -61,7 +61,7 @@ module datapath(
         .clk(clk),
         .w_en3(w_en3),
         .addr1(instr[19:15]),
-        .addr2(write_data),
+        .addr2(instr[24:20]),
         .addr3(instr[11:7]),
         .w_data3(result),
         .r_data1(src_a),
@@ -78,6 +78,7 @@ module datapath(
     
     extend extend_inst (
         .instr(instr[31:7]),
+        .sel(imm_src),
         .imm_ext(imm_ext)
     );
     
