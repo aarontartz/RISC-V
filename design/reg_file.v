@@ -22,8 +22,8 @@ module reg_file(
     reg [31:0] reg_file [31:0];  // 32 element (registers) x 32 bits (for each register)
     
     // register file read combinationally
-    assign r_data1 = (addr1 == 0) ? 0 : reg_file[addr1];  // registe x0 is hardwired to always 0
-    assign r_data2 = (addr1 == 0) ? 0 : reg_file[addr2];
+    assign r_data1 = (addr1 == 0) ? 0 : reg_file[addr1];  // register x0 is hardwired to always 0
+    assign r_data2 = (addr2 == 0) ? 0 : reg_file[addr2];
     
     always @(posedge clk) begin
         if (w_en3)
