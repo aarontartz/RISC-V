@@ -36,6 +36,7 @@ module extend_tb;
         @(posedge clk);
         sel <= 2'b10;
         instr <= TEST3;
+        @(posedge clk);
+        $finish;
     end
-
 endmodule
