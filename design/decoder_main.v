@@ -39,6 +39,8 @@ module decoder_main(
                 out_reg = 9'b1_xx_0_0_0_0_10;  // R-type
             7'b1100011:
                 out_reg = 9'b0_10_0_0_x_1_01;  // beq
+            7'b0010011:
+                out_reg = 9'b1_00_1_0_0_0_10;  // addi
             default:
                 out_reg = 9'bx_xx_x_x_x_x_xx;
         endcase
