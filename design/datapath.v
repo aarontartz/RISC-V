@@ -91,7 +91,7 @@ module datapath(
     
     alu alu_plus_4 (            // next instruction (instructions are 32 bits / 4 bytes)
         .op_a(pc),
-        .op_b(3'h4),            // 4
+        .op_b(32'h00000004),            // 4
         .sel(3'b000),           // addition
         .is_zero(),
         .result(pc_plus_4)      // to program counter (pc)
@@ -100,7 +100,7 @@ module datapath(
     alu alu_pc_target (         // computes branch target address
         .op_a(pc),
         .op_b(imm_ext),
-        .sel(3'b000),           // addition
+        .sel(31'h00000004),           // addition
         .is_zero(),
         .result(pc_target)
     );
