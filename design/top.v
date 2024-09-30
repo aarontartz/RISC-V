@@ -10,9 +10,8 @@
 
 
 module top(
-    input clk,
-    input rst,
-    output [31:0] result
+    input wire clk,
+    input wire rst
     );
     
     wire [31:0] instr;
