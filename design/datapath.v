@@ -22,7 +22,10 @@ module datapath(
     input wire alu_src,             // to mux (output to alu)
     input wire pc_src,              // to mux (output to pc)
     output wire is_zero,            // from alu (inputs from reg file)
-    output wire [31:0] instr_out    // from instr_mem_inst
+    output wire [31:0] instr_out,    // from instr_mem_inst
+    
+    // TESTING
+    output wire [31:0] pc_out
     );
     
     wire [31:0] pc;
@@ -39,6 +42,8 @@ module datapath(
     wire [31:0] pc_target;
     
     assign instr_out = instr;   // for control unit input
+    
+    assign pc_out = pc;  // TESTING
     
     pc pc_inst (
         .clk(clk),
@@ -101,15 +106,15 @@ module datapath(
     );
     
     mux mux_reg_file (          // outputs to reg file
-        .in1(alu_result),
-        .in2(read_data),
+        .in_a(alu_result),
+        .in_b(read_data),
         .sel(result_src),
         .out(result)
     );
     
     mux mux_alu (               // outputs to alu
-        .in1(write_data),       // just shares same wire as write_data to data_mem_inst
-        .in2(imm_ext),
+        .in_a(write_data),       // just shares same wire as write_data to data_mem_inst
+        .in_b(imm_ext),
         .sel(alu_src),
         .out(src_b)
     );
