@@ -2,4 +2,4 @@
 Single-cycle 32-bit RISC-V (RV32I)
 
 ## Instructions
-* asdf
+* lw, sw, add, sub, and, or, slt, addi (, andi, ori, slti)
