@@ -11,7 +11,6 @@
 
 module datapath(
     input wire clk,
-    input wire rst,
     
     // control unit inputs & outputs
     input wire w_en,                // to data mem
@@ -28,33 +27,76 @@ module datapath(
     output wire [31:0] pc_out
     );
     
+    wire [1:0] instr_mem_sel;
+    wire [1:0] data_mem_sel;
     wire [31:0] pc;
     wire [31:0] pc_next;
     wire [31:0] instr;
     wire [31:0] src_a;
     wire [31:0] src_b;
     wire [31:0] alu_result;
+    wire [31:0] data;
     wire [31:0] read_data;
     wire [31:0] write_data;
-    wire [31:0] pc_plus_4;
+    wire [31:0] pc_plus_2;
     wire [31:0] result;         // alu_result (R-type) or read_data (lw)
     wire [31:0] imm_ext;
     wire [31:0] pc_target;
     
     assign instr_out = instr;   // for control unit input
+    assign data = w_en ? write_data : read_data;    // bus contention protection (SRAM inout)
     
     assign pc_out = pc;  // TESTING
     
     pc pc_inst (
         .clk(clk),
-        .rst(rst),
         .pc_next(pc_next),
         .pc(pc)
     );
     
-    instr_mem instr_mem_inst (
-        .instr_addr(pc),
-        .r_data(instr)
+    mem_decoder instr_decoder_inst (
+        .addr_in(pc[19]),
+        .mem_sel(instr_mem_sel)
+    );
+    
+    S29AL008J_upper instr_upper_inst1 (
+        .CE(instr_mem_sel[0]),
+        .OE(1'b0),          // Read Only Memory
+        .WE(1'b1),
+        .RESET(1'b1),
+        .BYTE(1'b1),        // always set to 16-bit mode
+        .A(pc[18:0]),
+        .DQ(instr[31:16])  // upper 16 bits
+    );
+    
+    S29AL008J_lower instr_lower_inst1 (
+        .CE(instr_mem_sel[0]),
+        .OE(1'b0),
+        .WE(1'b1),
+        .RESET(1'b1),
+        .BYTE(1'b1),
+        .A(pc[18:0]),
+        .DQ(instr[15:0])  // lower 16 bits
+    );
+    
+    S29AL008J_upper instr_upper_inst2 (
+        .CE(instr_mem_sel[1]),
+        .OE(1'b0),          // Read Only Memory
+        .WE(1'b1),
+        .RESET(1'b1),
+        .BYTE(1'b1),        // always set to 16-bit mode
+        .A(pc[18:0]),
+        .DQ(instr[31:16])  // upper 16 bits
+    );
+    
+    S29AL008J_lower instr_lower_inst2 (
+        .CE(instr_mem_sel[1]),
+        .OE(1'b0),
+        .WE(1'b1),
+        .RESET(1'b1),
+        .BYTE(1'b1),
+        .A(pc[18:0]),
+        .DQ(instr[15:0])  // lower 16 bits
     );
     
     reg_file reg_file_inst (
@@ -68,12 +110,53 @@ module datapath(
         .r_data2(write_data)
     );
     
-    data_mem data_mem_inst (
-        .clk(clk),
-        .w_en(w_en),
-        .addr(alu_result),
-        .w_data(write_data),    // read from reg (file), written to (data) mem
-        .r_data(read_data)      // read from (data) mem, written to reg (file)
+    mem_decoder data_decoder_inst (
+        .addr_in(alu_result[17]),
+        .mem_sel(data_mem_sel)
+    );
+    
+    IS62WV12816BLL data_upper_inst1 (
+        .CS1(data_mem_sel[0]),
+        .CS2(1'b1),
+        .OE(~w_en),
+        .WE(w_en),
+        .LB(1'b0),       // always set to 16-bit mode
+        .UB(1'b0),
+        .A(alu_result[16:0]),
+        .IO(data[31:16]) // upper 16 bits
+    );
+    
+    IS62WV12816BLL data_lower_inst1 (
+        .CS1(data_mem_sel[0]),
+        .CS2(1'b1),
+        .OE(~w_en),
+        .WE(w_en),
+        .LB(1'b0),
+        .UB(1'b0),
+        .A(alu_result[16:0]),
+        .IO(data[15:0])  // lower 16 bits
+    );
+    
+    IS62WV12816BLL data_upper_inst2 (
+        .CS1(data_mem_sel[1]),
+        .CS2(1'b1),
+        .OE(~w_en),
+        .WE(w_en),
+        .LB(1'b0),       // always set to 16-bit mode
+        .UB(1'b0),
+        .A(alu_result[16:0]),
+        .IO(data[31:16]) // upper 16 bits
+    );
+    
+    IS62WV12816BLL data_lower_inst2 (
+        .CS1(data_mem_sel[1]),
+        .CS2(1'b1),
+        .OE(~w_en),
+        .WE(w_en),
+        .LB(1'b0),
+        .UB(1'b0),
+        .A(alu_result[16:0]),
+        .IO(data[15:0])  // lower 16 bits
     );
     
     extend extend_inst (
@@ -90,18 +173,18 @@ module datapath(
         .result(alu_result)
     );
     
-    alu alu_plus_4 (            // next instruction (instructions are 32 bits / 4 bytes)
+    alu alu_plus_2 (            // next instruction (instructions are 32 bits / 4 bytes)
         .op_a(pc),
-        .op_b(32'h00000004),            // 4
+        .op_b(32'h00000002),
         .sel(3'b000),           // addition
         .is_zero(),
-        .result(pc_plus_4)      // to program counter (pc)
+        .result(pc_plus_2)      // to program counter (pc)
     );
     
     alu alu_pc_target (         // computes branch target address
         .op_a(pc),
         .op_b(imm_ext),
-        .sel(31'h00000004),           // addition
+        .sel(3'b000),           // addition
         .is_zero(),
         .result(pc_target)
     );
@@ -121,7 +204,7 @@ module datapath(
     );
     
     mux mux_pc (                // outputs to pc
-        .in_a(pc_plus_4),        // goes to next instruction
+        .in_a(pc_plus_2),        // goes to next instruction
         .in_b(pc_target),        // branches to different instruction
         .sel(pc_src),
         .out(pc_next)
