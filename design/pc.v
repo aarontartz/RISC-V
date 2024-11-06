@@ -10,7 +10,6 @@
 
 module pc(
     input wire clk,
-    input wire rst,
     input wire [31:0] pc_next,
     output wire [31:0] pc
     );
@@ -20,10 +19,7 @@ module pc(
     assign pc = pc_reg;  // pc contains address of instruction to execute
     
     always @(posedge clk) begin
-        if (rst)  // synchronous & active high reset
-            pc_reg <= 0;
-        else
-            pc_reg <= pc_next;  // pc_next contains address of next instruction to execute
+        pc_reg <= pc_next;  // pc_next contains address of next instruction to execute
     end
     
 endmodule
