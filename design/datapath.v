@@ -53,8 +53,19 @@ module datapath(
         .pc_next(pc_next),
         .pc(pc)
     );
+
+    reg_file reg_file_inst (
+        .clk(clk),
+        .w_en3(w_en3),
+        .addr1(instr[19:15]),
+        .addr2(instr[24:20]),
+        .addr3(instr[11:7]),
+        .w_data3(result),
+        .r_data1(src_a),
+        .r_data2(write_data)
+    );
     
-    mem_decoder instr_decoder_inst (
+    decoder_mem instr_decoder_inst (
         .addr_in(pc[19]),
         .mem_sel(instr_mem_sel)
     );
@@ -99,18 +110,7 @@ module datapath(
         .DQ(instr[15:0])  // lower 16 bits
     );
     
-    reg_file reg_file_inst (
-        .clk(clk),
-        .w_en3(w_en3),
-        .addr1(instr[19:15]),
-        .addr2(instr[24:20]),
-        .addr3(instr[11:7]),
-        .w_data3(result),
-        .r_data1(src_a),
-        .r_data2(write_data)
-    );
-    
-    mem_decoder data_decoder_inst (
+    decoder_mem data_decoder_inst (
         .addr_in(alu_result[17]),
         .mem_sel(data_mem_sel)
     );
