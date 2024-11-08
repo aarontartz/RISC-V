@@ -5,7 +5,7 @@
 // 
 // Create Date: 11/03/2024 11:28:49 PM
 // Design Name: 
-// Module Name: mem_decoder
+// Module Name: decoder_mem
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mem_decoder(
+module decoder_mem(
     input wire addr_in,
     output wire [1:0] mem_sel  // chip enables/selects are all active LOW
     );
