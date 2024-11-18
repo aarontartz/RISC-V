@@ -24,7 +24,8 @@ module IS62WV12816BLL(
     
     wire [15:0] io_in;
     reg [15:0] io_out;
-    wire io_drive;
+    wire io_read;
+    wire io_write;
     
     assign io_in = IO;
     assign io_read = ((~CS1) && (CS2) && (~OE) && (WE));
