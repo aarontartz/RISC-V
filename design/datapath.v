@@ -11,7 +11,7 @@
 
 module datapath(
     input wire clk,
-    
+    input wire rst,
     // control unit inputs & outputs
     input wire w_en,                // to data mem
     input wire w_en3,               // to reg file
@@ -22,9 +22,7 @@ module datapath(
     input wire pc_src,              // to mux (output to pc)
     output wire is_zero,            // from alu (inputs from reg file)
     output wire [31:0] instr_out,    // from instr_mem_inst
-    
-    // TESTING
-    output wire [31:0] pc_out
+    output wire led_io
     );
     
     wire [1:0] instr_mem_sel;
@@ -44,29 +42,18 @@ module datapath(
     wire [31:0] pc_target;
     
     assign instr_out = instr;   // for control unit input
-    assign data = w_en ? write_data : read_data;    // bus contention protection (SRAM inout)
-    
-    assign pc_out = pc;  // TESTING
+    assign data = w_en ? write_data : 32'bz;    // SRAM inout
+    assign read_data = data;
     
     pc pc_inst (
         .clk(clk),
+        .rst(rst),
         .pc_next(pc_next),
         .pc(pc)
     );
-
-    reg_file reg_file_inst (
-        .clk(clk),
-        .w_en3(w_en3),
-        .addr1(instr[19:15]),
-        .addr2(instr[24:20]),
-        .addr3(instr[11:7]),
-        .w_data3(result),
-        .r_data1(src_a),
-        .r_data2(write_data)
-    );
     
-    decoder_mem instr_decoder_inst (
-        .addr_in(pc[19]),
+    decoder_instr decoder_instr_inst (
+        .addr_in(pc),
         .mem_sel(instr_mem_sel)
     );
     
@@ -110,9 +97,21 @@ module datapath(
         .DQ(instr[15:0])  // lower 16 bits
     );
     
-    decoder_mem data_decoder_inst (
-        .addr_in(alu_result[17]),
-        .mem_sel(data_mem_sel)
+    reg_file reg_file_inst (
+        .clk(clk),
+        .w_en3(w_en3),
+        .addr1(instr[19:15]),
+        .addr2(instr[24:20]),
+        .addr3(instr[11:7]),
+        .w_data3(result),
+        .r_data1(src_a),
+        .r_data2(write_data)
+    );
+    
+    decoder_data decoder_data_inst (
+        .addr_in(alu_result),
+        .mem_sel(data_mem_sel),
+        .led_io(led_io)
     );
     
     IS62WV12816BLL data_upper_inst1 (
