@@ -11,7 +11,8 @@
 
 module top(
     input wire clk,
-    output wire led // I get "[Common 17-70] Application Exception: Failed to stitch checkpoint" without an output
+    input wire btn0,
+    output wire ck_io0
     );
     
     wire [31:0] instr;
@@ -47,6 +48,7 @@ module top(
     
     datapath datapath_inst (
         .clk(clk),
+        .rst(btn0),
         .w_en(mem_write),
         .w_en3(reg_write),
         .alu_ctrl(alu_ctrl),
@@ -55,7 +57,8 @@ module top(
         .alu_src(alu_src),
         .pc_src(pc_src),
         .is_zero(is_zero),
-        .instr_out(instr)
+        .instr_out(instr),
+        .led_io(ck_io0)
     );
     
 endmodule
