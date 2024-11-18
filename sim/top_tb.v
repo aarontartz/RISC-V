@@ -22,22 +22,22 @@
 
 module top_tb;
     reg clk;
-    reg [1:0] btn;
-    wire led;
+    reg btn0;
+    wire ck_io0;
     
     top top_inst(
         .clk(clk),
-        .btn(btn[0]),
-        .led(led)
+        .btn0(btn0),
+        .ck_io0(ck_io0)
     );
     
     always #20 clk = ~clk;
     
     initial begin
         clk <= 1;
-        btn[0] <= 1;
+        btn0 <= 1;
         @(posedge clk);
-        btn[0] <= 0;
+        btn0 <= 0;
     end
     
 endmodule
