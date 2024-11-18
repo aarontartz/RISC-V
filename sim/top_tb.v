@@ -1,30 +1,43 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Engineer: Aaron Tartz
+// Company: 
+// Engineer: 
 // 
-// Create Date: 09/29/2024 03:02:22 AM
+// Create Date: 09/29/2024 08:32:45 PM
+// Design Name: 
 // Module Name: top_tb
-// Description: Executes machine code stored in external instr.txt file
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
 
 module top_tb;
     reg clk;
-    reg rst;
+    reg [1:0] btn;
+    wire led;
     
     top top_inst(
         .clk(clk),
-        .rst(rst)
+        .btn(btn[0]),
+        .led(led)
     );
     
     always #20 clk = ~clk;
     
     initial begin
         clk <= 1;
-        rst <= 1;
+        btn[0] <= 1;
         @(posedge clk);
-        rst <= 0;
+        btn[0] <= 0;
     end
     
 endmodule
