@@ -27,7 +27,7 @@ module S29AL008J_upper(
     
     wire [15:0] dq_in;
     reg [15:0] dq_out;
-    wire dq_drive;
+    wire dq_read;
     
     assign dq_in = DQ;
     assign dq_read = ((~CE) && (~OE) && (WE) && (RESET));
