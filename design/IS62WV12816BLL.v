@@ -1,37 +1,3 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Engineer: Aaron Tartz
-// 
-// Create Date: 09/28/2024 01:46:59 AM
-// Module Name: IS62WV12816BLL
-// Description: data RAM, can read and write 16 bits of data at a time
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
-
-module IS62WV12816BLL(
-    input wire CS1,
-    input wire CS2,
-    input wire OE,
-    input wire WE,
-    input wire LB,
-    input wire UB,
-    input wire [16:0] A,
-    inout wire [15:0] IO
-    );
-    
-    reg [15:0] data_mem [31:0];  // 128K x 16-bit (2 Mb), but decreasing from [131072:0] just so I can synthesize
-    
-    wire [15:0] io_in;
-    reg [15:0] io_out;
-    wire io_read;
-    wire io_write;
-    
-    assign io_in = IO;
-    assign io_read = ((~CS1) && (CS2) && (~OE) && (WE));
-    assign io_write = ((~CS1) && (CS2) && (OE) && (~WE));
-    
-    `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Engineer: Aaron Tartz
 // 
